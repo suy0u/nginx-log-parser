@@ -1,4 +1,5 @@
 import re
+import csv
 
 LOG_PATTERN = re.compile(
     r'(?P<ip>\S+) \S+ \S+ '
@@ -30,8 +31,23 @@ def parse_log(file_path):
 
     return rows
 
+def save_csv(data, output_file):
+    if not data:
+        print("No data found")
+        return
+    with open(output_file, "w", newline="") as f:
+        writer = csv.DictWriter(
+            f,
+            fieldnames=data[0].keys()
+        )
+
+        writer.writeheader()
+        writer.writerows(data)
+
+
 def main():
-    parse_log("nginx.log")
+    data = parse_log("nginx.log")
+    save_csv(data, "output.csv")
 
     print("Done!")
 
