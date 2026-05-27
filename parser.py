@@ -1,5 +1,6 @@
 import re
 import csv
+import argparse
 
 LOG_PATTERN = re.compile(
     r'(?P<ip>\S+) \S+ \S+ '
@@ -31,6 +32,7 @@ def parse_log(file_path):
 
     return rows
 
+
 def save_csv(data, output_file):
     if not data:
         print("No data found")
@@ -44,10 +46,26 @@ def save_csv(data, output_file):
         writer.writeheader()
         writer.writerows(data)
 
-
 def main():
-    data = parse_log("nginx.log")
-    save_csv(data, "output.csv")
+    parser = argparse.ArgumentParser()
+
+    parser.add_argument("--log",  default="nginx.log")
+    parser.add_argument("--output", default="result.csv")
+    parser.add_argument("--status")
+    parser.add_argument("--sort")
+    parser.add_argument("--order", choices=["asc", "desc"], default="asc")
+
+    args = parser.parse_args()
+
+    data = parse_log(args.log)
+
+    if args.status:
+        data = [x for x in data if x["status"] == args.status]
+
+    if args.sort:
+        data = sorted(data, key=lambda x: x[args.sort], reverse=(args.order == "desc"))
+
+    save_csv(data, args.output)
 
     print("Done!")
 
