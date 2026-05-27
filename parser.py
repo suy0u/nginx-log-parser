@@ -49,8 +49,8 @@ def save_csv(data, output_file):
 def main():
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--log",  default="nginx.log")
-    parser.add_argument("--output", default="result.csv")
+    parser.add_argument("--log",  required=True)
+    parser.add_argument("--output", default="output/result.csv")
     parser.add_argument("--status")
     parser.add_argument("--sort")
     parser.add_argument("--order", choices=["asc", "desc"], default="asc")
